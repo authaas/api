@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## 0.7.2 - 2026-09-14
+#### Bug Fixes
+- still fixing release workflow - (9b026f7) - Nathan Blair
+
+- - -
+
 ## 0.7.1 - 2026-09-14
 #### Bug Fixes
 - fixing release pipelines - (811a58a) - Nathan Blair
