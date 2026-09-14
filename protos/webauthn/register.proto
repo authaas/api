@@ -3,12 +3,20 @@ syntax = "proto3";
 package webauthn;
 
 import "identity/principal.proto";
-import "token/grant.proto";
+import "token/proof.proto";
 import "webauthn/authenticator.proto";
 import "webauthn/public_key_credential.proto";
 import "webauthn/relying_party.proto";
 
 option go_package = "github.com/authaas/api/webauthn";
+
+message AttestationCredential {
+  bytes raw_id = 1;
+  PublicKeyCredentialType type = 2;
+  AuthenticatorAttachment authenticator_attachment = 3;
+  bytes client_extension_results = 4;
+  AuthenticatorAttestationResponse response = 5;
+}
 
 message PublicKeyCredentialCreationOptions {
   bytes challenge = 1;
@@ -24,34 +32,19 @@ message PublicKeyCredentialCreationOptions {
   bytes extensions = 11;
 }
 
-message RegisterRequest {
-  message RegisterStart {
-    string name = 1;
-    string display_name = 2;
-  }
-
-  message AttestationCredential {
-    bytes raw_id = 1;
-    PublicKeyCredentialType type = 2;
-    AuthenticatorAttachment authenticator_attachment = 3;
-    bytes client_extension_results = 4;
-    AuthenticatorAttestationResponse response = 5;
-  }
-
-  oneof message {
-    RegisterStart start = 1;
-    AttestationCredential credential = 2;
-  }
+message BeginRegisterRequest {
+  string name = 1;
+  string display_name = 2;
 }
 
-message RegisterResponse {
-  message RegisterResult {
-    identity.Principal principal = 1;
-    token.Grant grant = 2;
-  }
+message BeginRegisterResponse {
+  PublicKeyCredentialCreationOptions options = 1;
+}
 
-  oneof message {
-    PublicKeyCredentialCreationOptions options = 1;
-    RegisterResult result = 2;
-  }
+message FinishRegisterRequest {
+  AttestationCredential credential = 1;
+}
+
+message FinishRegisterResponse {
+  token.Proof proof = 1;
 }

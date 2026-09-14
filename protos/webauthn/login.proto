@@ -2,12 +2,19 @@ syntax = "proto3";
 
 package webauthn;
 
-import "identity/principal.proto";
-import "token/grant.proto";
+import "token/proof.proto";
 import "webauthn/authenticator.proto";
 import "webauthn/public_key_credential.proto";
 
 option go_package = "github.com/authaas/api/webauthn";
+
+message AssertionCredential {
+  bytes raw_id = 1;
+  PublicKeyCredentialType type = 2;
+  AuthenticatorAttachment authenticator_attachment = 3;
+  bytes client_extension_results = 4;
+  AuthenticatorAssertionResponse response = 5;
+}
 
 message PublicKeyCredentialRequestOptions {
   bytes challenge = 1;
@@ -19,31 +26,16 @@ message PublicKeyCredentialRequestOptions {
   bytes extensions = 7;
 }
 
-message LoginRequest {
-  message LoginStart {}
+message BeginLoginRequest {}
 
-  message AssertionCredential {
-    bytes raw_id = 1;
-    PublicKeyCredentialType type = 2;
-    AuthenticatorAttachment authenticator_attachment = 3;
-    bytes client_extension_results = 4;
-    AuthenticatorAssertionResponse response = 5;
-  }
-
-  oneof message {
-    LoginStart start = 1;
-    AssertionCredential credential = 2;
-  }
+message BeginLoginResponse {
+  PublicKeyCredentialRequestOptions options = 1;
 }
 
-message LoginResponse {
-  message LoginResult {
-    identity.Principal principal = 1;
-    token.Grant grant = 2;
-  }
+message FinishLoginRequest {
+  AssertionCredential credential = 1;
+}
 
-  oneof message {
-    PublicKeyCredentialRequestOptions options = 1;
-    LoginResult result = 2;
-  }
+message FinishLoginResponse {
+  token.Proof proof = 1;
 }

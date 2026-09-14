@@ -9,9 +9,13 @@ option go_package = "github.com/authaas/api/services";
 
 // WebAuthnService handles WebAuthn/Passkey identity verification
 service WebAuthnService {
-  // Run the webauthn registration ceremony
-  rpc Register(stream webauthn.RegisterRequest) returns (stream webauthn.RegisterResponse);
+  // Begin the webauthn registration ceremony
+  rpc BeginRegister(webauthn.BeginRegisterRequest) returns (webauthn.BeginRegisterResponse);
+  // Finish the webauthn registration ceremony
+  rpc FinishRegister(webauthn.FinishRegisterRequest) returns (webauthn.FinishRegisterResponse);
 
-  // Run the webauthn login ceremony
-  rpc Login(stream webauthn.LoginRequest) returns (stream webauthn.LoginResponse);
+  // Begin the webauthn login ceremony
+  rpc BeginLogin(webauthn.BeginLoginRequest) returns (webauthn.BeginLoginResponse);
+  // Finish the webauthn login ceremony
+  rpc FinishLogin(webauthn.FinishLoginRequest) returns (webauthn.FinishLoginResponse);
 }

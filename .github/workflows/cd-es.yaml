@@ -1,0 +1,34 @@
+name: CD - ES
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - '*.*.*'
+      - '!v*'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.ref_name }}
+
+      - name: Generate code from protos
+        uses: katastroma/skeuotheke/.github/actions/proto-buf-gen@v0
+
+      - name: Setup mise
+        uses: jdx/mise-action@v4
+
+      - name: Generate exports
+        working-directory: es
+        run: deno run -R -W exports.ts
+
+      - name: Publish to JSR
+        working-directory: es
+        run: deno publish --set-version ${{ github.ref_name }}

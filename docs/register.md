@@ -57,20 +57,20 @@ without case conversion or Unicode normalization.
 
 After receiving `RegisterStart`, the handler:
 
-1. Generates a candidate `principalId` and uses its bytes as WebAuthn `user.id`.
+1. Generates a candidate `principalId`, a UUIDv4, and uses its 16 raw bytes as
+   WebAuthn `user.id`.
 2. Generates a cryptographically random challenge of at least 16 bytes.
 3. Loads the operator-controlled response values defined in
    [Operator Responsibilities](./operator.md#request-configuration).
 
-The `principalId` must be opaque, contain no personally identifying information,
-and be between 1 and 64 bytes inclusive. WebAuthn constrains the `user.id` byte
-sequence itself and rejects any other length; the constraint does not apply to
-an encoding of that sequence. The `principalId` does not identify a persisted
+A `principalId` is a UUIDv4, carried as its canonical 36-character string in
+every message and stored as a native UUID. WebAuthn requires `user.id` to be
+opaque, free of personally identifying information, and between 1 and 64
+bytes; a UUIDv4's 16 bytes of random content satisfy that, where a version
+embedding a timestamp or MAC address would place structure in a value WebAuthn
+requires to be opaque. A service rejects an id that does not parse as a UUID
+with `INVALID_ARGUMENT`. The `principalId` does not identify a persisted
 principal until the atomic storage operation succeeds.
-
-A UUIDv4 satisfies these constraints and is adequate for most deployments.
-Versions that embed a timestamp or MAC address do not, because they place
-structure in a value WebAuthn requires to be opaque.
 
 The first response contains:
 

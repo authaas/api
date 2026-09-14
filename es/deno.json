@@ -1,0 +1,11 @@
+{
+  "exports": {},
+  "name": "@authaas/api",
+  "imports": {
+    "@bufbuild/protobuf": "npm:@bufbuild/protobuf@^2.15.0",
+    "@std/fs": "jsr:@std/fs@^1.0.24"
+  },
+  "publish": {
+    "exclude": ["exports.ts"]
+  }
+}

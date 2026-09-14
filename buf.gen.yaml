@@ -6,7 +6,13 @@ plugins:
     opt:
       - module=github.com/authaas/api
 
-  - remote: buf.build/grpc/go
+  - remote: buf.build/connectrpc/go
     out: go
     opt:
       - module=github.com/authaas/api
+
+  - remote: buf.build/bufbuild/es
+    out: es
+    opt:
+      - target=ts
+      - import_extension=ts

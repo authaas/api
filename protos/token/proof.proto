@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package token;
+
+import "identity/principal.proto";
+import "token/grant.proto";
+
+option go_package = "github.com/authaas/api/token";
+
+message Proof {
+  identity.Principal principal = 1;
+  token.Grant grant = 2;
+}
