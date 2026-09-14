@@ -1,6 +1,6 @@
 name: CD - ES
 
-run-name: Publish ES ${{ github.ref }}
+run-name: Publish ES ${{ github.ref_name }}
 
 on:
   workflow_dispatch:
@@ -33,4 +33,4 @@ jobs:
 
       - name: Publish to JSR
         working-directory: es
-        run: deno publish --set-version ${{ github.ref_name }}
+        run: deno publish --set-version ${{ github.ref_name }} --allow-dirty

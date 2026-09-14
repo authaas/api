@@ -1,6 +1,6 @@
 name: CD - Go
 
-run-name: Publish Go ${{ github.ref }}
+run-name: Publish Go ${{ github.ref_name }}
 
 on:
   workflow_dispatch:
