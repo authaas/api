@@ -2,6 +2,14 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## 0.8.6 - 2026-09-16
+#### Bug Fixes
+- update foundation - (702ca21) - Nathan Blair
+#### Miscellaneous Chores
+- consistent package disable comment notes - (387249c) - Nathan Blair
+
+- - -
+
 ## 0.8.5 - 2026-09-16
 #### Bug Fixes
 - upgrade connect-foundation - (340d3c9) - Nathan Blair
