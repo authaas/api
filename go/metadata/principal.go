@@ -3,25 +3,38 @@ package metadata
 
 import (
 	"context"
-	"fmt"
+	"errors"
+	"log/slog"
 
-	"google.golang.org/grpc/metadata"
+	"connectrpc.com/connect/v2"
 
 	"git.sonicoriginal.software/logger"
 )
 
 const (
-	// PrincipalIDKey is the gRPC metadata key for the authenticated principal ID.
-	// The "sub" claim from validated JWT can be extracted and injected into this metadata field.
-	// Services read this field to identify the authenticated principal.
+	// PrincipalIDKey is the request header carrying the authenticated principal
+	// ID. The gateway's authenticator sets it from the verified token's "sub"
+	// and removes any value a client supplied; services read it to identify
+	// the authenticated principal.
 	PrincipalIDKey = "x-principal-id"
 )
 
-// ExtractPrincipal extracts the authenticated principal ID from gRPC metadata.
-// Updates logger with authentication status and stores in context.
-// Returns: principal ID, updated context (with enriched logger), error.
-// If authenticated: logger has "requester" and "authenticated=true"
-// If not authenticated: logger has "authenticated=false"
+// The ways a request fails to name its principal.
+var (
+	ErrNoCall            = errors.New("no call in context")
+	ErrNoPrincipal       = errors.New("no principal ID in request")
+	ErrMultiplePrincipal = errors.New("multiple principal IDs in request")
+)
+
+func unauthenticated(ctx context.Context, log *slog.Logger, err error) (string, context.Context, error) {
+	return "", logger.ContextWithLogger(ctx, log.With("authenticated", false)), err
+}
+
+// ExtractPrincipal reads the authenticated principal ID off the request the
+// handler is serving, from the call connect attached to ctx. It answers with
+// the ID and a context whose logger carries "requester" and
+// "authenticated=true"; on failure the logger carries "authenticated=false"
+// and the error says why.
 func ExtractPrincipal(
 	ctx context.Context,
 ) (
@@ -29,35 +42,37 @@ func ExtractPrincipal(
 ) {
 	log := logger.FromContext(ctx)
 
-	md, ok := metadata.FromIncomingContext(ctx)
+	info, ok := connect.CallInfoForServerContext(ctx)
 	if !ok {
-		log = log.With("authenticated", false)
-		ctx = logger.ContextWithLogger(ctx, log)
-		return "", ctx, fmt.Errorf("no metadata in request")
+		return unauthenticated(ctx, log, ErrNoCall)
 	}
 
-	values := md.Get(PrincipalIDKey)
+	values := info.RequestHeader().Values(PrincipalIDKey)
 
-	if len(values) == 0 {
-		log = log.With("authenticated", false)
-		ctx = logger.ContextWithLogger(ctx, log)
-		return "", ctx, fmt.Errorf("no principal ID in metadata")
+	switch len(values) {
+	case 0:
+		return unauthenticated(ctx, log, ErrNoPrincipal)
+	case 1:
+	default:
+		return unauthenticated(ctx, log, ErrMultiplePrincipal)
 	}
 
-	if len(values) > 1 {
-		log = log.With("authenticated", false)
-		ctx = logger.ContextWithLogger(ctx, log)
-		return "", ctx, fmt.Errorf("multiple principal IDs in metadata")
-	}
-
-	// Success - add requester and authenticated flag to logger
 	log = log.With("requester", values[0], "authenticated", true)
-	ctx = logger.ContextWithLogger(ctx, log)
-	return values[0], ctx, nil
+
+	return values[0], logger.ContextWithLogger(ctx, log), nil
 }
 
-// InjectPrincipalID injects the authenticated principal ID into outgoing gRPC metadata.
-// Used by gateway to propagate authenticated principal to backend services.
+// InjectPrincipalID sets the principal ID on the outgoing call ctx carries,
+// so a service calling another on the principal's behalf forwards who it is
+// acting for. ctx is a client context from connect.NewClientContext; one that
+// is not becomes one. The returned context is what the call is made with.
 func InjectPrincipalID(ctx context.Context, principalID string) context.Context {
-	return metadata.AppendToOutgoingContext(ctx, PrincipalIDKey, principalID)
+	info, ok := connect.CallInfoForClientContext(ctx)
+	if !ok {
+		ctx, info = connect.NewClientContext(ctx)
+	}
+
+	info.RequestHeader().Set(PrincipalIDKey, principalID)
+
+	return ctx
 }
