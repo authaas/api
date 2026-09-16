@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## 0.8.1 - 2026-09-16
+#### Bug Fixes
+- expose principal ID validation - (64479cb) - Nathan Blair
+
+- - -
+
 ## 0.8.0 - 2026-09-16
 #### Features
 - BeginLoginRequest accepts the credential_id - (44486cf) - Nathan Blair
