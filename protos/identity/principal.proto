@@ -4,11 +4,9 @@ package identity;
 
 option go_package = "github.com/authaas/api/identity";
 
-// Principal represents the core identity of a principal in the system
+// Principal represents the core identity in the system
 message Principal {
   string id = 1;
   string name = 2;
   string display_name = 3;
-  int64 creation_date = 4;
-  int64 last_authenticated_date = 5;
 }

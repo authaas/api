@@ -1,11 +1,11 @@
 syntax = "proto3";
 
-package token;
+package identity;
 
 import "identity/principal.proto";
 import "token/grant.proto";
 
-option go_package = "github.com/authaas/api/token";
+option go_package = "github.com/authaas/api/identity";
 
 message Proof {
   identity.Principal principal = 1;

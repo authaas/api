@@ -3,7 +3,7 @@ syntax = "proto3";
 package webauthn;
 
 import "identity/principal.proto";
-import "token/proof.proto";
+import "identity/proof.proto";
 import "webauthn/authenticator.proto";
 import "webauthn/public_key_credential.proto";
 import "webauthn/relying_party.proto";
@@ -33,8 +33,7 @@ message PublicKeyCredentialCreationOptions {
 }
 
 message BeginRegisterRequest {
-  string name = 1;
-  string display_name = 2;
+  identity.Principal user = 1;
 }
 
 message BeginRegisterResponse {
@@ -42,9 +41,10 @@ message BeginRegisterResponse {
 }
 
 message FinishRegisterRequest {
-  AttestationCredential credential = 1;
+  identity.Principal user = 1;
+  AttestationCredential credential = 2;
 }
 
 message FinishRegisterResponse {
-  token.Proof proof = 1;
+  identity.Proof proof = 1;
 }

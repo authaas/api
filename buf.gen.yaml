@@ -6,7 +6,8 @@ plugins:
     opt:
       - module=github.com/authaas/api
 
-  - remote: buf.build/connectrpc/go
+  # - remote: buf.build/connectrpc/go:v2.0.0
+  - local: protoc-gen-connect-go
     out: go
     opt:
       - module=github.com/authaas/api
