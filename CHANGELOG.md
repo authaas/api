@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## 0.8.5 - 2026-09-16
+#### Bug Fixes
+- upgrade connect-foundation - (340d3c9) - Nathan Blair
+
+- - -
+
 ## 0.8.4 - 2026-09-16
 #### Bug Fixes
 - make beginregister fields explicit - (9aeeba8) - Nathan Blair
