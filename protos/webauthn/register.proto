@@ -33,7 +33,8 @@ message PublicKeyCredentialCreationOptions {
 }
 
 message BeginRegisterRequest {
-  identity.Principal user = 1;
+  string name = 1;
+  string display_name = 2;
 }
 
 message BeginRegisterResponse {
