@@ -7,8 +7,8 @@ import (
 	"github.com/pbrpc/connect-foundation/errors"
 )
 
-// PrincipalID validates a PrincipalID, which is a UUID in its canonical string
-// form. The check runs before any query so a malformed id is the caller's
+// PrincipalID validates a PrincipalID as an RFC 4122 variant UUIDv4.
+// The check runs before any query so a malformed id is the caller's
 // error rather than the database's.
 func PrincipalID(principalID string) (violations []errors.FieldViolation) {
 	if principalID == "" {
@@ -18,10 +18,11 @@ func PrincipalID(principalID string) (violations []errors.FieldViolation) {
 		})
 	}
 
-	if _, err := uuid.Parse(principalID); err != nil {
+	id, err := uuid.Parse(principalID)
+	if err != nil || id.Version() != 4 || id.Variant() != uuid.RFC4122 {
 		violations = append(violations, errors.FieldViolation{
 			Field:       "principal_id",
-			Description: "principal_id must be a UUID",
+			Description: "principal_id must be an RFC 4122 variant UUIDv4",
 		})
 	}
 
