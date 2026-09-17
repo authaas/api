@@ -4,7 +4,7 @@ package validate
 import (
 	"github.com/google/uuid"
 
-	"github.com/pbrpc/connect-foundation/errors"
+	errors "github.com/pbrpc/connect-errors"
 )
 
 // PrincipalID validates a PrincipalID as an RFC 4122 variant UUIDv4.
