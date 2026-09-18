@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## 0.9.1 - 2026-09-18
+#### Bug Fixes
+- update deps - (8cd6596) - Nathan Blair
+
+- - -
+
 ## 0.9.0 - 2026-09-17
 #### Features
 - swap connect-foundation for connect-errors - (536cb73) - Nathan Blair
